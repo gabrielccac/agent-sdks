@@ -2,7 +2,7 @@ import { generateObject } from 'ai';
 import { google } from '@ai-sdk/google';
 import { ExtractionSchema, type Extraction } from './schema.js';
 
-const MODEL_ID = 'gemini-2.0-flash';
+const MODEL_ID = 'gemini-2.5-flash';
 
 const EXTRACTION_PROMPT = `Você é um assistente de extração de dados de editais e termos de referência de licitações públicas brasileiras.
 
