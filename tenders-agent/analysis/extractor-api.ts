@@ -44,7 +44,17 @@ const RESPONSE_SCHEMA = {
     },
     validadeProposta: { type: SchemaType.STRING, nullable: true, description: 'Prazo de validade da proposta' },
     prazoEntrega:     { type: SchemaType.STRING, nullable: true, description: 'Prazo de entrega ou execução' },
-    anexos:           { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
+    anexos: {
+      type: SchemaType.ARRAY,
+      items: {
+        type: SchemaType.OBJECT,
+        properties: {
+          titulo:  { type: SchemaType.STRING, description: 'Título do documento como referenciado no edital' },
+          arquivo: { type: SchemaType.STRING, nullable: true, description: 'Nome do arquivo PDF onde foi encontrado' },
+        },
+        required: ['titulo'],
+      },
+    },
     camposFaltantes:  { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
   },
   required: ['contato', 'itens', 'validadeProposta', 'prazoEntrega', 'anexos', 'camposFaltantes'],
