@@ -47,7 +47,7 @@ Pass a natural language description to `query_tenders`. Examples:
 
 **DataLeilao is the auction date only.** For "vencemos semana passada" — filter by status Homologada only, no date.
 
-If a query returns empty, retry with just the status filter and tell the user if there are results with a different date range.
+If the tool returns empty, report that directly — do not retry with a different request.
 
 ## Formatting
 
