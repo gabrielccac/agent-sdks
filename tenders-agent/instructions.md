@@ -58,6 +58,21 @@ User intent → Status values to filter:
 
 date_mode values: today, tomorrow, thisWeek, nextWeek, thisMonth, nextMonth, pastWeek, pastMonth.
 
+## Important rules for querying
+
+**DataLeilao is the auction/session date only** — it is NOT the date a tender was won, lost, or updated.
+There is no "data de homologação" or "data de derrota" field in the schema.
+
+Therefore:
+- "vencemos semana passada" → filter Status=Homologada only, no date_mode
+- "perdemos esse mês" → filter Status=Derrota only, no date_mode
+- "leilões da semana passada" → date_mode=pastWeek only, no status filter (unless asked)
+- "leilões de hoje em monitoramento" → date_mode=today + status=Monitoramento (auction today, bid submitted)
+
+**When a combined filter returns empty:** retry with just the status filter (no date_mode).
+If that returns results, tell the user: "Encontrei X disputas com esse status, mas nenhuma com leilão nesse período."
+If that also returns empty, then report clearly: "Não há disputas com esse status."
+
 ## Formatting rules
 
 - Dates: DD/MM/YYYY HH:mm when time is relevant, DD/MM/YYYY otherwise.
