@@ -69,7 +69,10 @@ async function downloadDocument(doc: DocumentInput): Promise<{ name: string; bas
   return { name: doc.filename, base64: Buffer.from(buffer).toString('base64') };
 }
 
-export async function extractFromDocumentsApi(documents: DocumentInput[]): Promise<ExtractionResult> {
+export async function extractFromDocumentsApi(
+  documents:  DocumentInput[],
+  focusHint?: string,
+): Promise<ExtractionResult> {
   if (!documents.length) throw new Error('No documents provided for extraction');
 
   const downloaded = await Promise.all(documents.map(downloadDocument));
@@ -83,11 +86,14 @@ export async function extractFromDocumentsApi(documents: DocumentInput[]): Promi
     },
   });
 
+  const basePrompt = promptWithFileContext(downloaded.map(d => d.name));
+  const finalPrompt = focusHint ? `${basePrompt}\n\n${focusHint}` : basePrompt;
+
   const result = await model.generateContent([
     ...downloaded.map(d => ({
       inlineData: { mimeType: 'application/pdf' as const, data: d.base64 },
     })),
-    { text: promptWithFileContext(downloaded.map(d => d.name)) },
+    { text: finalPrompt },
   ]);
 
   const raw = result.response.text();

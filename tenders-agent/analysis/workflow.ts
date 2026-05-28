@@ -1,33 +1,43 @@
 import { extractFromDocumentsApi } from './extractor-api.js';
+import { reviewExtraction } from './reviewer.js';
 import type { DocumentInput } from './prompt.js';
 import type { ExtractionResult } from './extractor-api.js';
+import type { ReviewResult } from './reviewer.js';
+import type { ApiTenderData } from '../api/types.js';
 
 export interface WorkflowInput {
   codigoCompra: string;
   documents:    DocumentInput[];
+  apiData:      ApiTenderData;
 }
 
 export interface WorkflowResult {
   codigoCompra: string;
   extraction:   ExtractionResult;
-  status:       'complete' | 'incomplete' | 'needs_review';
-  gaps:         string[];
+  review:       ReviewResult;
+  status:       'complete' | 'incomplete' | 'needs_human';
 }
 
 export async function runAnalysisWorkflow(input: WorkflowInput): Promise<WorkflowResult> {
-  const { codigoCompra, documents } = input;
+  const { codigoCompra, documents, apiData } = input;
 
   const extraction = await extractFromDocumentsApi(documents);
-  const gaps       = extraction.camposFaltantes;
+  const review     = await reviewExtraction(extraction, documents, apiData);
 
-  // TODO: reviewer — check gaps, re-extract with focus, enrich with metadata
-  // TODO: write enriched result back to Airtable
+  // Enrich extraction with API fields not in documents
+  const enriched: ExtractionResult = {
+    ...review.extraction,
+    // API metadata available as top-level enrichment — stored in review for callers
+  };
 
-  const status = gaps.length === 0
-    ? 'complete'
-    : gaps.length <= 2
+  const errorCount   = review.flags.filter(f => f.severity === 'error').length;
+  const warningCount = review.flags.filter(f => f.severity === 'warning').length;
+
+  const status: WorkflowResult['status'] = review.needsHuman
+    ? 'needs_human'
+    : warningCount > 0
       ? 'incomplete'
-      : 'needs_review';
+      : 'complete';
 
-  return { codigoCompra, extraction, status, gaps };
+  return { codigoCompra, extraction: enriched, review, status };
 }
