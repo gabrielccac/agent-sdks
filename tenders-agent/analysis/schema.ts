@@ -5,7 +5,8 @@ export const ContatoSchema = z.object({
   email:    z.string().nullable().describe('E-mail de contato'),
   telefone: z.string().nullable().describe('Telefone de contato'),
   orgao:    z.string().nullable().describe('Nome do órgão comprador'),
-  endereco: z.string().nullable().describe('Endereço do órgão'),
+  endereco: z.string().nullable().describe('Endereço do órgão sem o CEP'),
+  cep:      z.string().regex(/^\d{5}-\d{3}$/).nullable().describe('CEP no formato XXXXX-XXX, sem pontos'),
 });
 
 export const ItemSchema = z.object({
