@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { airtableFetch } from '../tools/airtable.js';
 import { extractFromDocuments } from './extractor.js';
 import { extractFromDocumentsApi } from './extractor-api.js';
@@ -19,7 +20,7 @@ if (!codigoCompra) {
 if (!process.env.AIRTABLE_TOKEN)               { console.error('Missing AIRTABLE_TOKEN');                process.exit(1); }
 if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) { console.error('Missing GOOGLE_GENERATIVE_AI_API_KEY'); process.exit(1); }
 
-const RESULTS_DIR = path.join(path.dirname(new URL(import.meta.url).pathname), 'results');
+const RESULTS_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), 'results');
 
 async function saveResult(label: string, codigoCo: string, data: unknown): Promise<string> {
   await fs.mkdir(RESULTS_DIR, { recursive: true });
