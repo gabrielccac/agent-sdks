@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { Agent, run } from '@openai/agents';
+import { Agent, run, RunToolCallItem, RunToolCallOutputItem } from '@openai/agents';
 import { agentInstructions } from './instructions.js';
 import { tools } from './tools.js';
 
@@ -22,11 +22,11 @@ const result = await run(agent, query);
 if (verbose) {
   console.log('\n--- Tool calls ---');
   for (const item of result.newItems) {
-    if (item.type === 'tool_call_item') {
+    if (item instanceof RunToolCallItem && item.rawItem.type === 'function_call') {
       console.log(`\n[${item.rawItem.name}]`);
       console.log(' in:', JSON.stringify(JSON.parse(item.rawItem.arguments ?? '{}'), null, 2));
     }
-    if (item.type === 'tool_call_output_item') {
+    if (item instanceof RunToolCallOutputItem) {
       const s = typeof item.output === 'string' ? item.output : JSON.stringify(item.output);
       console.log(' out:', s.slice(0, 800), s.length > 800 ? '…' : '');
     }
