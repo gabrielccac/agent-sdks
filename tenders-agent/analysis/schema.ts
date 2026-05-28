@@ -12,7 +12,7 @@ export const ItemSchema = z.object({
   descricao:             z.string().describe('Descrição completa do item'),
   quantidade:            z.number().describe('Quantidade solicitada'),
   unidade:               z.string().describe('Unidade de medida (ex: un, kg, m²)'),
-  especificacoes:        z.array(z.string()).describe('Especificações técnicas obrigatórias'),
+  especificacoes:        z.string().describe('Texto integral das especificações técnicas conforme consta no documento, sem resumir ou omitir nenhuma informação'),
   valorUnitarioEstimado: z.number().nullable().describe('Valor unitário estimado se explicitamente declarado no documento'),
 });
 
