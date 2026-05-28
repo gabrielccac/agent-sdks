@@ -33,6 +33,7 @@ const RESPONSE_SCHEMA = {
       items: {
         type: SchemaType.OBJECT,
         properties: {
+          numero:        { type: SchemaType.NUMBER, nullable: true, description: 'Número ou índice do item conforme aparece na tabela do documento' },
           descricao:     { type: SchemaType.STRING, description: 'Descrição completa do item' },
           quantidade:    { type: SchemaType.NUMBER, description: 'Quantidade solicitada' },
           unidade:       { type: SchemaType.STRING, description: 'Unidade de medida' },

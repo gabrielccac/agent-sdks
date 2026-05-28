@@ -10,6 +10,7 @@ export const ContatoSchema = z.object({
 });
 
 export const ItemSchema = z.object({
+  numero:                z.number().int().nullable().describe('Número ou índice do item conforme aparece na tabela do documento (ex: 1, 2, 3)'),
   descricao:             z.string().describe('Descrição completa do item'),
   quantidade:            z.number().describe('Quantidade solicitada'),
   unidade:               z.string().describe('Unidade de medida (ex: un, kg, m²)'),
