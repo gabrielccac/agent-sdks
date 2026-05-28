@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { Agent, run, RunToolCallItem, RunToolCallOutputItem } from '@openai/agents';
 import { agentInstructions } from './instructions.js';
-import { tools } from './tools.js';
+import { tools } from './tools/index.js';
 
 if (!process.env.AIRTABLE_TOKEN) { console.error('Missing AIRTABLE_TOKEN'); process.exit(1); }
 if (!process.env.OPENAI_API_KEY)  { console.error('Missing OPENAI_API_KEY');  process.exit(1); }
