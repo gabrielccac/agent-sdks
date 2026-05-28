@@ -7,32 +7,25 @@ const server = new MCPServerStreamableHttp({
   requestInit: { headers: { Authorization: `Bearer ${process.env.AIRTABLE_TOKEN}` } },
 });
 
-const BASE   = 'app3ZwUila8cvLYLu';
-const TABLE  = 'tbldNqB7CyC0bii06';
+const BASE  = 'app3ZwUila8cvLYLu';
+const TABLE = 'tbldNqB7CyC0bii06';
 
-async function call(tool, args) {
+async function call(tool, args = {}) {
   console.log(`\n>>> ${tool}`);
-  console.log('input:', JSON.stringify(args, null, 2));
   const result = await server.callTool(tool, args);
-  const text = result?.map?.(r => r.text ?? JSON.stringify(r)).join('\n') ?? JSON.stringify(result);
-  console.log('output:', text.slice(0, 1000));
-  return text;
+  // Print raw structure so we can see exactly what comes back
+  console.log('raw:', JSON.stringify(result, null, 2));
 }
 
 await server.connect();
 
-// 1. Can we list tools at all?
-const tools = await server.listTools();
-console.log('\n=== Available tools ===');
-console.log(tools.map(t => t.name).join(', '));
+// 1. ping — simplest possible call, confirms auth is working
+await call('ping');
 
-// 2. list-tables-for-base — do we get field IDs?
+// 2. list_tables_for_base
 await call('list_tables_for_base', { baseId: BASE });
 
-// 3. Bare minimum record fetch — no fieldIds, no filters, no sort
+// 3. bare record fetch — no extra params
 await call('list_records_for_table', { baseId: BASE, tableId: TABLE });
-
-// 4. With pageSize only
-await call('list_records_for_table', { baseId: BASE, tableId: TABLE, pageSize: 3 });
 
 await server.close();
