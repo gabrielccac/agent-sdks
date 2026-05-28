@@ -1,6 +1,5 @@
 import { tool } from '@openai/agents';
 import { z } from 'zod';
-import { generateFormula } from './formula-generator.js';
 
 const BASE   = 'app3ZwUila8cvLYLu';
 const TABLE  = 'tbldNqB7CyC0bii06';
@@ -41,16 +40,11 @@ async function fetchRecords(formula, limit = 50) {
 export const tools = [
   tool({
     name: 'query_tenders',
-    description: 'Fetch tenders from the Disputas table. Describe what you want in plain language — status, date range, state, price, keyword, or any combination.',
+    description: 'Query the Disputas table with an Airtable filterByFormula string. Pass empty string to fetch all records.',
     parameters: z.object({
-      request: z.string().describe(
-        'Natural language description of the filter, e.g. "active tenders this week in SP" or "tenders we won" or "all tenders".'
-      ),
+      formula: z.string().describe('Airtable filterByFormula expression. See instructions for syntax reference.'),
+      limit:   z.number().int().positive().optional().describe('Max records to return. Defaults to 50.'),
     }),
-    execute: async ({ request }) => {
-      const { formula, limit } = await generateFormula(request);
-      console.log(`[formula] ${formula || '(none — fetch all)'}`);
-      return fetchRecords(formula, limit);
-    },
+    execute: ({ formula, limit }) => fetchRecords(formula, limit),
   }),
 ];
