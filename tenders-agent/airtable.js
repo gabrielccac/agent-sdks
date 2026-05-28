@@ -74,7 +74,9 @@ export const airtableTools = {
       if (filterByFormula) params.filterByFormula = filterByFormula;
 
       const data = await airtableFetch(params);
-      return data.records.map(formatRecord);
+      const records = data.records.map(formatRecord);
+      if (!records.length) return 'Nenhuma disputa encontrada com os critérios fornecidos.';
+      return { count: records.length, records };
     },
   },
 
@@ -99,7 +101,9 @@ export const airtableTools = {
         filterByFormula: formula,
         pageSize: limit,
       });
-      return data.records.map(formatRecord);
+      const records = data.records.map(formatRecord);
+      if (!records.length) return 'Nenhuma disputa encontrada para esse termo de busca.';
+      return { count: records.length, records };
     },
   },
 
@@ -117,7 +121,7 @@ export const airtableTools = {
         filterByFormula: `{CodigoCompra}="${codigo}"`,
         pageSize: 1,
       });
-      if (!data.records.length) return null;
+      if (!data.records.length) return `Nenhuma disputa encontrada com CodigoCompra "${codigo}".`;
       return formatRecord(data.records[0]);
     },
   },
