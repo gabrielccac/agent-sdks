@@ -25,8 +25,9 @@ export interface DocumentInput {
 
 export interface ExtractionResult extends Extraction {
   usage?: {
-    promptTokens?:     number;
-    completionTokens?: number;
+    inputTokens?:  number;
+    outputTokens?: number;
+    totalTokens?:  number;
   };
 }
 
@@ -66,7 +67,7 @@ export async function extractFromDocuments(documents: DocumentInput[]): Promise<
   return {
     ...object,
     usage: usage
-      ? { promptTokens: usage.promptTokens, completionTokens: usage.completionTokens }
+      ? { inputTokens: usage.inputTokens, outputTokens: usage.outputTokens, totalTokens: usage.totalTokens }
       : undefined,
   };
 }
