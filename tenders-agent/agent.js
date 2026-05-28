@@ -31,7 +31,9 @@ async function main() {
     mcpServers: [airtableMCP],
   });
 
-  const query = process.argv[2] ?? 'Liste todas as disputas cadastradas.';
+  const args = process.argv.slice(2);
+  const verbose = args.includes('--verbose');
+  const query = args.filter(a => a !== '--verbose').join(' ') || 'Liste todas as disputas cadastradas.';
 
   console.log(`Query: ${query}\n`);
 
@@ -39,6 +41,24 @@ async function main() {
     await airtableMCP.connect();
 
     const result = await run(agent, query);
+
+    if (verbose) {
+      console.log('\n--- Tool calls ---');
+      for (const item of result.newItems) {
+        if (item.type === 'tool_call_item') {
+          const raw = item.rawItem;
+          console.log(`\n[${raw.name}]`);
+          console.log('  input:', JSON.stringify(raw.arguments ? JSON.parse(raw.arguments) : {}, null, 2));
+        }
+        if (item.type === 'tool_call_output_item') {
+          const out = item.rawItem?.output;
+          const preview = typeof out === 'string' ? out.slice(0, 300) : JSON.stringify(out).slice(0, 300);
+          console.log('  output:', preview, out?.length > 300 ? '...' : '');
+        }
+      }
+      console.log('------------------\n');
+    }
+
     console.log('Response:\n', result.finalOutput);
   } finally {
     await airtableMCP.close();
