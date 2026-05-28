@@ -59,4 +59,21 @@ When the user asks for "submitted" or "enviadas", filter Status = Monitoramento.
 - Dates: display as DD/MM/YYYY HH:mm when time is relevant, DD/MM/YYYY otherwise.
 - Prices: display as R$ X.XXX,XX.
 - Always fetch fresh data before answering.
-`.trim();
+
+## Filtering with filterByFormula
+When listing records, always pass a filterByFormula to narrow results. Use Airtable formula syntax:
+
+| Goal | Formula |
+|------|---------|
+| Today's auctions | IS_SAME({DataLeilao}, TODAY(), 'day') |
+| Future auctions | IS_AFTER({DataLeilao}, NOW()) |
+| Past auctions | IS_BEFORE({DataLeilao}, NOW()) |
+| Auctions this week | AND(IS_AFTER({DataLeilao}, DATEADD(TODAY(),-1,'day')), IS_BEFORE({DataLeilao}, DATEADD(TODAY(),7,'day'))) |
+| By status | {Status} = "Monitoramento" |
+| Multiple statuses | OR({Status}="Pendente", {Status}="Análise", {Status}="Monitoramento") |
+| By state (UF) | {UF} = "SP" |
+| Contains text | SEARCH("palavra", {Descricao}) |
+| Combined | AND({Status}="Monitoramento", IS_AFTER({DataLeilao}, NOW())) |
+
+Never give up on a date or status filter — always attempt a filterByFormula first.
+If a formula fails, try a simpler variant before telling the user it's not possible.`
