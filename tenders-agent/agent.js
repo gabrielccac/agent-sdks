@@ -51,9 +51,9 @@ async function main() {
           console.log('  input:', JSON.stringify(raw.arguments ? JSON.parse(raw.arguments) : {}, null, 2));
         }
         if (item.type === 'tool_call_output_item') {
-          const out = item.rawItem?.output;
-          const preview = typeof out === 'string' ? out.slice(0, 300) : JSON.stringify(out).slice(0, 300);
-          console.log('  output:', preview, out?.length > 300 ? '...' : '');
+          const out = item.output;
+          const str = typeof out === 'string' ? out : JSON.stringify(out);
+          console.log('  output:', str.slice(0, 600), str.length > 600 ? '...' : '');
         }
       }
       console.log('------------------\n');
