@@ -47,11 +47,12 @@ const RESPONSE_SCHEMA = {
     prazoEntrega:     { type: SchemaType.STRING, nullable: true, description: 'Prazo de entrega ou execução' },
     anexos: {
       type: SchemaType.ARRAY,
+      description: 'Modelos e templates que o licitante deve preencher e entregar. NÃO listar os arquivos do processo em si.',
       items: {
         type: SchemaType.OBJECT,
         properties: {
-          titulo:  { type: SchemaType.STRING, description: 'Título do documento como referenciado no edital' },
-          arquivo: { type: SchemaType.STRING, nullable: true, description: 'Nome do arquivo PDF onde foi encontrado' },
+          titulo:  { type: SchemaType.STRING, description: 'Nome do modelo/template como aparece no documento (ex: "ANEXO I - Modelo de Proposta", "Planilha de Preços")' },
+          arquivo: { type: SchemaType.STRING, nullable: true, description: 'Nome do arquivo PDF que contém este modelo, se identificável' },
         },
         required: ['titulo'],
       },

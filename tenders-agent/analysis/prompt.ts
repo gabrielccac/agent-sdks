@@ -14,6 +14,7 @@ Se uma informação não constar no documento: retorne null para o campo e adici
 
 ## Atenção
 - contato: fiscal técnico ou servidor responsável — não o ordenador de despesas
+- anexos: somente modelos e templates que o licitante deve preencher e entregar (proposta comercial, planilha de preços, declarações, etc.) — não listar os arquivos do processo em si
 - camposFaltantes: use os nomes exatos dos campos (ex: "contato.email", "prazoEntrega")`;
 
 export function promptWithFileContext(filenames: string[]): string {

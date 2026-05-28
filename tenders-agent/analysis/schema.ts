@@ -24,9 +24,9 @@ export const ExtractionSchema = z.object({
   validadeProposta: z.string().nullable().describe('Prazo de validade da proposta (ex: "60 dias")'),
   prazoEntrega:     z.string().nullable().describe('Prazo de entrega ou execução (ex: "30 dias após ordem de serviço")'),
   anexos:           z.array(z.object({
-    titulo:  z.string().describe('Título ou nome do documento como referenciado no edital (ex: "Termo de Referência", "ANEXO I")'),
-    arquivo: z.string().nullable().describe('Nome do arquivo PDF onde este anexo foi encontrado'),
-  })).describe('Documentos referenciados ou exigidos'),
+    titulo:  z.string().describe('Nome do anexo/modelo como aparece no documento (ex: "ANEXO I - Modelo de Proposta", "Planilha de Preços")'),
+    arquivo: z.string().nullable().describe('Nome do arquivo PDF que contém este modelo, se identificável'),
+  })).describe('Modelos e templates que o licitante deve preencher e entregar — proposta comercial, planilha de preços, declarações, etc. NÃO listar os arquivos do processo em si'),
   camposFaltantes:  z.array(z.string()).describe('Campos que não foram encontrados nos documentos'),
 });
 
