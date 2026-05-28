@@ -46,27 +46,26 @@ if (!anexos?.length)      { console.error(`No attachments for "${codigoCompra}"`
 const documents: DocumentInput[] = anexos.map(a => ({ filename: a.filename, url: a.url }));
 console.log(`Documents: ${documents.map(d => d.filename).join(', ')}\n`);
 
-const jobs: Promise<void>[] = [];
-
-if (runSdk) {
-  jobs.push((async () => {
-    console.log('[sdk ] running...');
-    const result = await extractFromDocuments(documents);
-    const file   = await saveResult('sdk', codigoCompra, result);
-    console.log(`[sdk ] done — tokens: ${result.usage?.inputTokens ?? '?'} in / ${result.usage?.outputTokens ?? '?'} out`);
-    console.log(`[sdk ] saved → ${file}`);
-  })());
+async function runExtractor(label: string, fn: () => Promise<unknown>): Promise<void> {
+  console.log(`[${label}] running...`);
+  try {
+    const result = await fn();
+    const file   = await saveResult(label, codigoCompra!, result);
+    const r = result as { usage?: { inputTokens?: number; outputTokens?: number } };
+    console.log(`[${label}] done — tokens: ${r.usage?.inputTokens ?? '?'} in / ${r.usage?.outputTokens ?? '?'} out`);
+    console.log(`[${label}] saved → ${file}`);
+  } catch (err) {
+    const error  = err as Error & { value?: unknown };
+    const detail = { error: error.message, value: error.value ?? null };
+    const file   = await saveResult(`${label}-error`, codigoCompra!, detail).catch(() => '(could not save)');
+    console.error(`[${label}] failed: ${error.message}`);
+    console.error(`[${label}] saved error → ${file}`);
+  }
 }
 
-if (runApi) {
-  jobs.push((async () => {
-    console.log('[api ] running...');
-    const result = await extractFromDocumentsApi(documents);
-    const file   = await saveResult('api', codigoCompra, result);
-    console.log(`[api ] done — tokens: ${result.usage?.inputTokens ?? '?'} in / ${result.usage?.outputTokens ?? '?'} out`);
-    console.log(`[api ] saved → ${file}`);
-  })());
-}
+await Promise.all([
+  runSdk ? runExtractor('sdk', () => extractFromDocuments(documents))    : Promise.resolve(),
+  runApi ? runExtractor('api', () => extractFromDocumentsApi(documents)) : Promise.resolve(),
+]);
 
-await Promise.all(jobs);
-console.log('\nDone. Compare saved files to review differences.');
+console.log('\nDone.');
