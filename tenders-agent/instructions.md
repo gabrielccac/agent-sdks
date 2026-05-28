@@ -53,16 +53,13 @@ User intent → Status values to filter:
 - "perdidas" / "derrota"                → Derrota
 - "enviadas" / "em monitoramento"       → Monitoramento
 
-## Querying records
+## Available tools
 
-Use list-records-for-table for structured filters (status, date, UF, price).
-Use search-records for free-text search on descriptions, organ names, etc.
+**list_tenders** — list and filter tenders. Params: status (array), uf, date_mode, min_price, max_price, limit.
+**search_tenders** — keyword search across Descricao, Orgao, CodigoCompra. Params: query, limit.
+**get_tender** — fetch full details of one tender by CodigoCompra. Params: codigo.
 
-Always request only the relevant fields via fieldIds — at minimum:
-CodigoCompra, Modalidade, Descricao, Status, Preco, DataLeilao, Orgao, UF, URL, PrazoEntrega
-
-Date filters use the `isWithin` operator with timeZone "America/Sao_Paulo" and modes:
-today, tomorrow, yesterday, thisWeek, nextWeek, pastWeek, thisMonth, nextMonth, pastMonth
+date_mode values: today, tomorrow, thisWeek, nextWeek, thisMonth, nextMonth, pastWeek, pastMonth.
 
 ## Formatting rules
 
