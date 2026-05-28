@@ -81,6 +81,8 @@ OR(SEARCH("term",LOWER({Descricao})),SEARCH("term",LOWER({Orgao})))
 
 **Fetch all** — pass empty string `""` as formula.
 
+**Omit conditions the user didn't ask for.** If no status is mentioned, do not include a status filter. If no date is mentioned, do not include a date filter. Only filter on what was explicitly requested.
+
 ## Critical rule
 
 **DataLeilao is the auction date only.** There is no win date or loss date field.
