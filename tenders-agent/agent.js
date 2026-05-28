@@ -25,14 +25,14 @@ async function main() {
   });
 
   const agent = new Agent({
-    name: 'Tenants Agent',
-    instructions: `You are a helpful assistant for managing tenant data stored in Airtable.
-Use the Airtable tools available to you to look up, list, and summarize tenant information.
-When asked about tenants, always retrieve fresh data from Airtable before responding.`,
+    name: 'Tenders Agent',
+    instructions: `You are a helpful assistant for managing public tender data stored in Airtable.
+Use the Airtable tools available to you to look up, list, filter, and summarize tender information.
+When asked about tenders, always retrieve fresh data from Airtable before responding.`,
     mcpServers: [airtableMCP],
   });
 
-  const query = process.argv[2] ?? 'List all tenants from my Airtable tenants table.';
+  const query = process.argv[2] ?? 'List all tenders from my Airtable tenders table.';
 
   console.log(`Query: ${query}\n`);
 

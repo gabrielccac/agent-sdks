@@ -1,7 +1,7 @@
 {
-  "name": "tenants-agent",
+  "name": "tenders-agent",
   "version": "1.0.0",
-  "description": "A basic agent that retrieves data from an Airtable tenants database via the Airtable MCP",
+  "description": "A basic agent that retrieves public tender data from an Airtable database via the Airtable MCP",
   "main": "agent.js",
   "type": "module",
   "scripts": {
