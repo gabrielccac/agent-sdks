@@ -1,9 +1,9 @@
 import 'dotenv/config';
-import { MCPServerStreamableHttp } from '@openai/agents';
+import { MCPServerSSE } from '@openai/agents';
 
-const server = new MCPServerStreamableHttp({
+const server = new MCPServerSSE({
   name: 'airtable',
-  url: 'https://mcp.airtable.com/mcp',
+  url: 'https://mcp.airtable.com/sse',
   requestInit: { headers: { Authorization: `Bearer ${process.env.AIRTABLE_TOKEN}` } },
 });
 
