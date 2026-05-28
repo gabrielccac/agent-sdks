@@ -128,33 +128,29 @@ export const airtableTools = {
 };
 
 function dateModeFormula(mode) {
-  // Compute real date boundaries in Brazil time (UTC-3) so Airtable gets
-  // explicit ISO strings — avoids any ambiguity with Airtable's own TODAY().
+  // Use IS_SAME with explicit date strings (Brazil UTC-3) rather than
+  // Airtable's TODAY() to avoid server-side timezone ambiguity.
   const nowBR = new Date(Date.now() - 3 * 60 * 60 * 1000);
-  const y = nowBR.getUTCFullYear(), m = nowBR.getUTCMonth(), d = nowBR.getUTCDate();
+  const y = nowBR.getUTCFullYear(), mo = nowBR.getUTCMonth(), d = nowBR.getUTCDate();
 
   const ymd = (dt) => dt.toISOString().slice(0, 10);
-  const day  = (n) => new Date(Date.UTC(y, m, d + n));
-  const mon  = (n) => new Date(Date.UTC(y, m + n, 1));
+  const day = (n)  => new Date(Date.UTC(y, mo, d + n));
+  const mon = (n)  => new Date(Date.UTC(y, mo + n, 1));
 
-  // Start-of-current-week (Sunday)
-  const dow  = nowBR.getUTCDay();
-  const weekStart = day(-dow);
-
-  const ranges = {
-    today:     [day(0),        day(1)],
-    tomorrow:  [day(1),        day(2)],
-    yesterday: [day(-1),       day(0)],
-    thisWeek:  [weekStart,     new Date(weekStart.getTime() + 7 * 86400000)],
-    pastWeek:  [new Date(weekStart.getTime() - 7 * 86400000), weekStart],
-    nextWeek:  [new Date(weekStart.getTime() + 7 * 86400000), new Date(weekStart.getTime() + 14 * 86400000)],
-    thisMonth: [mon(0),        mon(1)],
-    pastMonth: [mon(-1),       mon(0)],
-    nextMonth: [mon(1),        mon(2)],
+  const ref = {
+    today:     [day(0),    'day'],
+    tomorrow:  [day(1),    'day'],
+    yesterday: [day(-1),   'day'],
+    thisWeek:  [day(0),    'week'],
+    pastWeek:  [day(-7),   'week'],
+    nextWeek:  [day(7),    'week'],
+    thisMonth: [day(0),    'month'],
+    pastMonth: [mon(-1),   'month'],
+    nextMonth: [mon(1),    'month'],
   };
 
-  const [start, end] = ranges[mode] ?? ranges.today;
-  return `AND(IS_AFTER({DataLeilao},'${ymd(start)}'),IS_BEFORE({DataLeilao},'${ymd(end)}'))`;
+  const [date, unit] = ref[mode] ?? ref.today;
+  return `IS_SAME({DataLeilao},'${ymd(date)}','${unit}')`;
 }
 
 function formatRecord(r) {
