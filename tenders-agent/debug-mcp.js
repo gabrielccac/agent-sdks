@@ -19,13 +19,19 @@ async function call(tool, args = {}) {
 
 await server.connect();
 
-// 1. ping — simplest possible call, confirms auth is working
+// 1. ping
 await call('ping');
 
-// 2. list_tables_for_base
+// 2. What bases does this token actually see?
+await call('list_bases');
+
+// 3. What workspaces?
+await call('list_workspaces');
+
+// 4. list_tables_for_base with our base
 await call('list_tables_for_base', { baseId: BASE });
 
-// 3. bare record fetch — no extra params
+// 5. bare record fetch
 await call('list_records_for_table', { baseId: BASE, tableId: TABLE });
 
 await server.close();
