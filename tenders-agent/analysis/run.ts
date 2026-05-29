@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { airtableFetch } from '../tools/airtable.js';
 import { extractFromDocumentsApi } from './extractor-api.js';
 import { runAnalysisWorkflow } from './workflow.js';
-import { fetchTenderApiData } from '../api/index.js';
+import { fetchComprasNetData } from '../api/comprasnet.js';
 import { getCaptchaToken } from '../api/captcha.js';
 import type { DocumentInput } from './prompt.js';
 
@@ -36,7 +36,7 @@ console.log(`Fetching documents for: ${codigoCompra}\n`);
 
 const airtableData = await airtableFetch({
   filterByFormula: `{CodigoCompra}="${codigoCompra}"`,
-  fields:          ['CodigoCompra', 'Anexos', 'URL'],
+  fields:          ['CodigoCompra', 'Anexos'],
   pageSize:        '1',
 });
 
@@ -53,11 +53,10 @@ try {
   if (fullMode) {
     console.log('Mode: full (extraction + review)\n');
 
-    const tenderUrl = record.URL ?? '';
     console.log('Getting captcha token...');
     const captcha = await getCaptchaToken();
     console.log('Fetching tender API data...');
-    const apiData = await fetchTenderApiData(codigoCompra, tenderUrl, captcha);
+    const apiData = await fetchComprasNetData(codigoCompra, captcha);
 
     const result = await runAnalysisWorkflow({ codigoCompra, documents, apiData });
     const file   = await saveResult('workflow', codigoCompra, result);
