@@ -6,7 +6,6 @@ import { airtableFetch } from '../tools/airtable.js';
 import { extractFromDocumentsApi } from './extractor-api.js';
 import { runAnalysisWorkflow } from './workflow.js';
 import { fetchComprasNetData } from '../api/comprasnet.js';
-import { getCaptchaToken } from '../api/captcha.js';
 import type { DocumentInput } from './prompt.js';
 
 const args        = process.argv.slice(2);
@@ -53,10 +52,8 @@ try {
   if (fullMode) {
     console.log('Mode: full (extraction + review)\n');
 
-    console.log('Getting captcha token...');
-    const captcha = await getCaptchaToken();
     console.log('Fetching tender API data...');
-    const apiData = await fetchComprasNetData(codigoCompra, captcha);
+    const apiData = await fetchComprasNetData(codigoCompra);
 
     const result = await runAnalysisWorkflow({ codigoCompra, documents, apiData });
     const file   = await saveResult('workflow', codigoCompra, result);

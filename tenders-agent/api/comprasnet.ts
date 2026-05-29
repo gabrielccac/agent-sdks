@@ -45,13 +45,10 @@ function paginationParams() {
 // Public client
 // ---------------------------------------------------------------------------
 
-export async function fetchComprasNetData(
-  codigoCompra: string,
-  captcha: string,
-): Promise<ApiTenderData> {
+export async function fetchComprasNetData(codigoCompra: string): Promise<ApiTenderData> {
   const [tender, rawItems] = await Promise.all([
-    get<RawTender>(`/compras/${codigoCompra}`, { captcha }),
-    get<RawItem[]>(`/compras/${codigoCompra}/itens`, { captcha, ...paginationParams() }),
+    get<RawTender>(`/compras/${codigoCompra}`),
+    get<RawItem[]>(`/compras/${codigoCompra}/itens`, paginationParams()),
   ]);
 
   const hasGroups = rawItems.some(i => i.tipo === 'G');
