@@ -36,7 +36,7 @@ console.log(`Fetching documents for: ${codigoCompra}\n`);
 
 const airtableData = await airtableFetch({
   filterByFormula: `{CodigoCompra}="${codigoCompra}"`,
-  fields:          ['CodigoCompra', 'Anexos', 'LinkEdital'],
+  fields:          ['CodigoCompra', 'Anexos', 'URL'],
   pageSize:        '1',
 });
 
@@ -53,7 +53,7 @@ try {
   if (fullMode) {
     console.log('Mode: full (extraction + review)\n');
 
-    const tenderUrl = record.LinkEdital ?? '';
+    const tenderUrl = record.URL ?? '';
     console.log('Getting captcha token...');
     const captcha = await getCaptchaToken();
     console.log('Fetching tender API data...');
